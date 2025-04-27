@@ -1,0 +1,75 @@
+# 📦 Gerenciador de Estoque com Python
+
+Este é um aplicativo de controle de estoque feito com **Python**, utilizando a biblioteca **CustomTkinter** para a interface gráfica, **OpenPyXL** para manipulação de planilhas Excel e **ttk.Treeview** (do tkinter) para exibição de dados.
+
+---
+
+## 🔧 Funcionalidades
+
+- Cadastro de produtos com:
+  - Nome
+  - Código
+  - Custo
+  - Quantidade
+  - Valor de venda
+- Salvamento automático dos dados em uma planilha `Excel` (`dados.xlsx`)
+- Visualização de todo o estoque em uma tabela
+- Limpeza rápida dos campos do formulário
+
+---
+
+## 🖥️ Tecnologias Utilizadas
+
+- [Python 3](https://www.python.org/)
+- [CustomTkinter](https://github.com/TomSchimansky/CustomTkinter) – Interface moderna com temas
+- [Tkinter](https://docs.python.org/3/library/tkinter.html) – Interface gráfica nativa do Python
+- [OpenPyXL](https://openpyxl.readthedocs.io/en/stable/) – Leitura e escrita de arquivos `.xlsx`
+- `ttk.Treeview` – Visualização em forma de tabela
+
+---
+
+## ▶️ Como Usar
+
+1. **Instale os requisitos:**
+   ```bash
+   pip install customtkinter openpyxl
+   ```
+
+2. **Crie um arquivo `dados.xlsx`** com a seguinte estrutura na primeira linha (cabeçalhos da planilha):
+
+   ```
+   Nome | Código | Custo | Quantidade | Valor de venda
+   ```
+
+3. **Execute o script:**
+   ```bash
+   python nome_do_arquivo.py
+   ```
+
+---
+
+## 🗂️ Estrutura do Projeto
+
+```
+gerenciador_estoque/
+│
+├── dados.xlsx          # Planilha com os dados do estoque
+└── gerenciador.py      # Script principal do app
+```
+
+---
+
+## 📸 Captura de Tela (opcional)
+
+> Adicione uma imagem do app em funcionamento aqui para demonstrar o visual.
+
+---
+
+## ✅ Melhorias Futuras
+
+- Editar ou excluir produtos já cadastrados
+- Buscar produtos pelo nome ou código
+- Geração de relatórios automáticos
+- Suporte a categorias de produtos
+
+---
