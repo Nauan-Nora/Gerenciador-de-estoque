@@ -69,7 +69,7 @@ def verifica_preenchimento():
             cadastrar_produto()
 
     except:
-        cadastrar_produto()
+        messagebox.showerror("ERRO", " Houve um erra não esperado, entre em contato com o suporte técnico")
 
 
 ctk.set_appearance_mode("white")
@@ -90,19 +90,19 @@ area_cadastro.grid_columnconfigure(0, weight=1)
 titulo = ctk.CTkLabel(area_cadastro, text="Formulario de cadastro")
 titulo.grid(row=0, column=0, pady=5, sticky="ew")
 
-nome = ctk.CTkEntry(area_cadastro, placeholder_text="Nome")
+nome = ctk.CTkEntry(area_cadastro, placeholder_text="Nome (somente letras)")
 nome.grid(row=1, column=0, pady=5, sticky="ew")
 
 codigo = ctk.CTkEntry(area_cadastro, placeholder_text="Código")
 codigo.grid(row=2, column=0, pady=5, sticky="ew")
 
-preco = ctk.CTkEntry(area_cadastro, placeholder_text="Custo")
+preco = ctk.CTkEntry(area_cadastro, placeholder_text="Custo (usar ponto ao envez de virgula)")
 preco.grid(row=3, column=0, pady=5, sticky="ew")
 
 quantidade = ctk.CTkEntry(area_cadastro, placeholder_text="Quantidade")
 quantidade.grid(row=4, column=0, pady=5, sticky="ew")
 
-venda = ctk.CTkEntry(area_cadastro, placeholder_text="Valor de venda")
+venda = ctk.CTkEntry(area_cadastro, placeholder_text="Valor de venda (usar ponto ao envez de virgula)")
 venda.grid(row=5, column=0, pady=5, sticky="ew")
 
 buton_cadastrar = ctk.CTkButton(area_cadastro, text="Cadastrar", command=verifica_preenchimento)
@@ -111,7 +111,6 @@ buton_cadastrar.grid(row=6, column=0, pady=5, sticky="ew")
 buton_apagar = ctk.CTkButton(area_cadastro, text="Limpar formulario", command=limpar_campos)
 buton_apagar.grid(row=7, column=0, pady=5, sticky="ew")
 
-# Área de visualização centralizada
 area_visualizacao = ctk.CTkFrame(app)
 area_visualizacao.grid(row=1, column=0, padx=20, pady=20, sticky="nsew")
 area_visualizacao.grid_columnconfigure(0, weight=1)
