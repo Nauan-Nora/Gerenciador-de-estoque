@@ -1,4 +1,5 @@
 from kivy.uix.treeview import TreeView
+from tkinter import messagebox
 import openpyxl
 import customtkinter as ctk
 import tkinter as tk
@@ -34,19 +35,41 @@ def limpar_campos():
     v_venda = venda.delete(0, "end")
 
 def mostra_estoque():
-    # Limpa a TreeView antes de inserir os dados novamente
     mostra.delete(*mostra.get_children())
 
-    # Obtém os cabeçalhos da planilha (primeira linha)
     cabecalhos = [cell.value for cell in ativa[1]]
     mostra["columns"] = cabecalhos
     mostra["show"] = "headings"
     for col in cabecalhos:
         mostra.heading(col, text=col)
 
-    # Itera pelas linhas da planilha (a partir da segunda linha, para pular o cabeçalho)
     for row in ativa.iter_rows(min_row=2, values_only=True):
         mostra.insert('', tk.END, values=row)
+
+def verifica_preenchimento():
+    v_nome = nome.get()
+    v_codigo = codigo.get()
+    v_preco = preco.get()
+    v_quantidade = quantidade.get()
+    v_venda = venda.get()
+
+    try:
+        if v_nome == "":
+            messagebox.showerror("ERRO DE PREENCIMENTO", "O campo de nome esta vazio")
+        elif v_codigo == "":
+            messagebox.showerror("ERRO DE PREENCIMENTO", "O compo de código esta vazio")
+        elif v_preco == "":
+            messagebox.showerror("ERRO DE PREENCIMENTO", " O campo de preço esta vazio")
+        elif v_quantidade == "":
+            messagebox.showerror("ERRO DE PREENCIMENTO", "O campo de quantidade esta vazio")
+        elif v_venda == "":
+            messagebox.showerror("ERRO DE PREENCIMENTO", "O campo de valor de venda esta vazio")
+            pass
+        else:
+            cadastrar_produto()
+
+    except:
+        cadastrar_produto()
 
 
 ctk.set_appearance_mode("white")
@@ -82,7 +105,7 @@ quantidade.grid(row=4, column=0, pady=5, sticky="ew")
 venda = ctk.CTkEntry(area_cadastro, placeholder_text="Valor de venda")
 venda.grid(row=5, column=0, pady=5, sticky="ew")
 
-buton_cadastrar = ctk.CTkButton(area_cadastro, text="Cadastrar", command=cadastrar_produto)
+buton_cadastrar = ctk.CTkButton(area_cadastro, text="Cadastrar", command=verifica_preenchimento)
 buton_cadastrar.grid(row=6, column=0, pady=5, sticky="ew")
 
 buton_apagar = ctk.CTkButton(area_cadastro, text="Limpar formulario", command=limpar_campos)
