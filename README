@@ -1,75 +1,58 @@
-# 📦 Gerenciador de Estoque com Python
+# 📦 Gerenciador de Estoque com Interface Gráfica (CustomTkinter + Excel)
 
-Este é um aplicativo de controle de estoque feito com **Python**, utilizando a biblioteca **CustomTkinter** para a interface gráfica, **OpenPyXL** para manipulação de planilhas Excel e **ttk.Treeview** (do tkinter) para exibição de dados.
+Este é um aplicativo de controle de estoque simples desenvolvido com Python. Ele utiliza `CustomTkinter` para a interface gráfica e o `openpyxl` para manipulação de dados em uma planilha Excel.
 
----
+## ✨ Funcionalidades
 
-## 🔧 Funcionalidades
+- Cadastro de novos produtos
+- Visualização de todos os produtos cadastrados
+- Pesquisa por nome ou qualquer outro campo
+- Remoção de itens do estoque
+- Salvamento automático dos dados em um arquivo `dados.xlsx`
+- Interface moderna com CustomTkinter
+- Modo claro e escuro (fácil de implementar via `set_appearance_mode`)
 
-- Cadastro de produtos com:
-  - Nome
-  - Código
-  - Custo
-  - Quantidade
-  - Valor de venda
-- Salvamento automático dos dados em uma planilha `Excel` (`dados.xlsx`)
-- Visualização de todo o estoque em uma tabela
-- Limpeza rápida dos campos do formulário
+## 📁 Requisitos
 
----
+- Python 3.8+
+- `openpyxl`
+- `customtkinter`
 
-## 🖥️ Tecnologias Utilizadas
+### Instalação dos pacotes:
 
-- [Python 3](https://www.python.org/)
-- [CustomTkinter](https://github.com/TomSchimansky/CustomTkinter) – Interface moderna com temas
-- [Tkinter](https://docs.python.org/3/library/tkinter.html) – Interface gráfica nativa do Python
-- [OpenPyXL](https://openpyxl.readthedocs.io/en/stable/) – Leitura e escrita de arquivos `.xlsx`
-- `ttk.Treeview` – Visualização em forma de tabela
+```bash
+pip install openpyxl customtkinter
+🚀 Como executar
+Clone este repositório ou baixe os arquivos.
 
----
+Certifique-se de que o arquivo dados.xlsx exista e tenha uma aba chamada Plan1 com os seguintes cabeçalhos na primeira linha:
 
-## ▶️ Como Usar
+mathematica
+Copiar
+Editar
+Código | Nome | Preço | Quantidade | Valor de Venda
+Execute o script principal:
 
-1. **Instale os requisitos:**
-   ```bash
-   pip install customtkinter openpyxl
-   ```
+bash
+Copiar
+Editar
+python nome_do_arquivo.py
+Substitua nome_do_arquivo.py pelo nome real do arquivo Python.
 
-2. **Crie um arquivo `dados.xlsx`** com a seguinte estrutura na primeira linha (cabeçalhos da planilha):
+🛠️ Estrutura do projeto
+bash
+Copiar
+Editar
+.
+├── assets/
+│   └── icon.ico        
+├── dados.xlsx             
+├── main.py               
+└── README.md               
+📌 Observações
+O sistema foi pensado para uso local e simples. Se você quiser algo mais robusto, pode integrar com banco de dados como SQLite ou MySQL.
 
-   ```
-   Nome | Código | Custo | Quantidade | Valor de venda
-   ```
+Certifique-se de usar ponto ao invés de vírgula para valores monetários, como indicado nos campos.
 
-3. **Execute o script:**
-   ```bash
-   python nome_do_arquivo.py
-   ```
-
----
-
-## 🗂️ Estrutura do Projeto
-
-```
-gerenciador_estoque/
-│
-├── dados.xlsx          # Planilha com os dados do estoque
-└── gerenciador.py      # Script principal do app
-```
-
----
-
-## 📸 Captura de Tela (opcional)
-
-> Adicione uma imagem do app em funcionamento aqui para demonstrar o visual.
-
----
-
-## ✅ Melhorias Futuras
-
-- Editar ou excluir produtos já cadastrados
-- Buscar produtos pelo nome ou código
-- Geração de relatórios automáticos
-- Suporte a categorias de produtos
-
----
+🧑‍💻 Autor
+Desenvolvido por Nauan Nora
