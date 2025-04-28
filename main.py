@@ -131,6 +131,7 @@ ctk.set_default_color_theme("green")
 app = ctk.CTk()
 app.geometry("830x710")
 app.title("Gerenciador de estoque")
+app.iconbitmap('assets/icon.ico')
 
 app.grid_rowconfigure(0, weight=0)
 app.grid_rowconfigure(1, weight=0) 
