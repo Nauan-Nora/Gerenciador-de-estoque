@@ -1,25 +1,25 @@
 from kivy.uix.treeview import TreeView
-from tkinter import messagebox
 import openpyxl
 import customtkinter as ctk
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 
 arquivo = openpyxl.load_workbook("dados.xlsx")
-ativa= arquivo['Plan1']
+ativa = arquivo['Plan1']
 tema_atual = "white"
 
-
 def cadastrar_produto():
-    v_nome = str(nome.get())
-    v_codigo = int(codigo.get())
-    v_preco = float(preco.get())
-    v_quantidade = int(quantidade.get())
-    v_venda = float(venda.get())
+
+    v_nome = str(nome_entry.get())
+    v_codigo = int(codigo_entry.get())
+    v_preco = float(preco_entry.get())
+    v_quantidade = int(quantidade_entry.get())
+    v_venda = float(venda_entry.get())
 
     ultima_linha = ativa.max_row + 1
-    ativa.cell(row=ultima_linha, column=1, value=v_nome)
-    ativa.cell(row=ultima_linha, column=2, value=v_codigo)
+    ativa.cell(row=ultima_linha, column=1, value=v_codigo)
+    ativa.cell(row=ultima_linha, column=2, value=v_nome)
     ativa.cell(row=ultima_linha, column=3, value=v_preco)
     ativa.cell(row=ultima_linha, column=4, value=v_quantidade)
     ativa.cell(row=ultima_linha, column=5, value=v_venda)
@@ -27,32 +27,85 @@ def cadastrar_produto():
     arquivo.save("dados.xlsx")
     limpar_campos()
     mostra_estoque()
+    nome_entry.focus_set()
 
 def limpar_campos():
-    v_nome = nome.delete(0, "end")
-    v_codigo = codigo.delete(0, "end")
-    v_preco = preco.delete(0, "end")
-    v_quantidade = quantidade.delete(0, "end")
-    v_venda = venda.delete(0, "end")
+    nome_entry.delete(0, "end")
+    codigo_entry.delete(0, "end")
+    preco_entry.delete(0, "end")
+    quantidade_entry.delete(0, "end")
+    venda_entry.delete(0, "end")
 
 def mostra_estoque():
     mostra_treeview.delete(*mostra_treeview.get_children())
+    try:
+        cabecalhos = [cell.value for cell in ativa[1]]
+        mostra_treeview["columns"] = cabecalhos
+        mostra_treeview["show"] = "headings"
+        for col_index, col in enumerate(cabecalhos):
+            mostra_treeview.heading(col, text=col)
+            mostra_treeview.column(col, width=100)
+        for row in ativa.iter_rows(min_row=2, values_only=True):
+            mostra_treeview.insert('', tk.END, values=row)
+    except IndexError:
+        print("A planilha está vazia ou a primeira linha não contém cabeçalhos.")
 
-    cabecalhos = [cell.value for cell in ativa[1]]
-    mostra_treeview["columns"] = cabecalhos
-    mostra_treeview["show"] = "headings"
-    for col in cabecalhos:
-        mostra_treeview.heading(col, text=col)
+def pesquisar_item():
+    termo_pesquisa = pesquisa_entry.get().lower()
+    for item in mostra_treeview.get_children():
+        valores = mostra_treeview.item(item, 'values')
+        if valores:
+            for valor in valores:
+                if termo_pesquisa in str(valor).lower():
+                    mostra_treeview.see(item)
+                    return
 
-    for row in ativa.iter_rows(min_row=2, values_only=True):
-        mostra_treeview.insert('', tk.END, values=row)
+def apagar_item():
+    item_selecionado = mostra_treeview.selection()
+    print(f"Itens selecionados na TreeView: {item_selecionado}")
+    if not item_selecionado:
+        print("Nenhum item selecionado para apagar.")
+        return 
+
+    item_id = item_selecionado[0]
+    valores = mostra_treeview.item(item_id, 'values')
+    print(f"Valores do item selecionado na TreeView: {valores}")
+    if valores:
+        nome_apagar = str(valores[1]).lower()
+        print(f"Nome a apagar (convertido para minúsculo): {nome_apagar}")
+
+        linhas_para_remover = []
+        for row_index, row in enumerate(ativa.iter_rows(min_row=2), start=2):
+            try:
+                nome_excel = str(row[1].value).lower() if row[1].value else ""
+                print(f"Nome na linha {row_index} da planilha (convertido para minúsculo): {nome_excel}")
+                if nome_apagar == nome_excel:
+                    linhas_para_remover.append(row_index)
+            except IndexError:
+                print(f"Erro ao acessar a coluna 'Nome' na linha {row_index} da planilha.")
+
+        print(f"Linhas a serem removidas da planilha: {linhas_para_remover}")
+        for linha in reversed(linhas_para_remover):
+            try:
+                ativa.delete_rows(linha)
+            except IndexError:
+                print(f"Erro ao tentar deletar a linha {linha} da planilha.")
+
+        arquivo.save("dados.xlsx")
+        mostra_estoque()
+    else:
+        print("Não foi possível obter os valores do item selecionado na TreeView.")
+
+    arquivo.save("dados.xlsx")
+    mostra_estoque()
+
 
 def verifica_preenchimento():
-    v_nome = nome.get()
-    v_codigo = codigo.get()
-    v_preco = preco.get()
-    v_quantidade = quantidade.get()
-    v_venda = venda.get()
+    v_nome = nome_entry.get()
+    v_codigo = codigo_entry.get()
+    v_preco = preco_entry.get()
+    v_quantidade = quantidade_entry.get()
+    v_venda = venda_entry.get()
 
     try:
         if v_nome == "":
@@ -71,7 +124,6 @@ def verifica_preenchimento():
 
     except:
         messagebox.showerror("ERRO", " Houve um erra não esperado, entre em contato com o suporte técnico")
-
 
 ctk.set_appearance_mode(tema_atual)
 ctk.set_default_color_theme("green")
@@ -107,23 +159,23 @@ frame_cadastro.grid_columnconfigure(0, weight=1)
 titulo = ctk.CTkLabel(frame_cadastro, text="Formulario de cadastro")
 titulo.grid(row=0, column=0, pady=5, sticky="ew")
 
-nome = ctk.CTkEntry(frame_cadastro, placeholder_text="Nome")
-nome.grid(row=1, column=0, pady=5, sticky="ew")
+nome_entry = ctk.CTkEntry(frame_cadastro, placeholder_text="Nome")
+nome_entry.grid(row=1, column=0, pady=5, sticky="ew")
 
-codigo = ctk.CTkEntry(frame_cadastro, placeholder_text="Código")
-codigo.grid(row=2, column=0, pady=5, sticky="ew")
+codigo_entry = ctk.CTkEntry(frame_cadastro, placeholder_text="Código")
+codigo_entry.grid(row=2, column=0, pady=5, sticky="ew")
 
-preco = ctk.CTkEntry(frame_cadastro, placeholder_text="Custo (usar ponto ao envez de virgula)")
-preco.grid(row=3, column=0, pady=5, sticky="ew")
+preco_entry = ctk.CTkEntry(frame_cadastro, placeholder_text="Custo (usar ponto ao envez de virgula)")
+preco_entry.grid(row=3, column=0, pady=5, sticky="ew")
 
-quantidade = ctk.CTkEntry(frame_cadastro, placeholder_text="Quantidade")
-quantidade.grid(row=4, column=0, pady=5, sticky="ew")
+quantidade_entry = ctk.CTkEntry(frame_cadastro, placeholder_text="Quantidade")
+quantidade_entry.grid(row=4, column=0, pady=5, sticky="ew")
 
-venda = ctk.CTkEntry(frame_cadastro, placeholder_text="Valor de venda (usar ponto ao envez de virgula)")
-venda.grid(row=5, column=0, pady=5, sticky="ew")
+venda_entry = ctk.CTkEntry(frame_cadastro, placeholder_text="Valor de venda (usar ponto ao envez de virgula)")
+venda_entry.grid(row=5, column=0, pady=5, sticky="ew")
 
-buton = ctk.CTkButton(frame_cadastro, text="Cadastrar", command=verifica_preenchimento)
-buton.grid(row=6, column=0, pady=5, sticky="ew")
+buton_cadastrar = ctk.CTkButton(frame_cadastro, text="Cadastrar", command=verifica_preenchimento)
+buton_cadastrar.grid(row=6, column=0, pady=5, sticky="ew")
 
 buton_limpar = ctk.CTkButton(frame_cadastro, text="Limpar formulario", command=limpar_campos)
 buton_limpar.grid(row=7, column=0, pady=5, sticky="ew")
@@ -139,10 +191,10 @@ funcionalidades_label.grid(row=0, column=0, pady=(5, 10), padx=10, sticky="ew")
 pesquisa_entry = ctk.CTkEntry(frame_opcoes, placeholder_text="Insira um nome")
 pesquisa_entry.grid(row=1, column=0, pady=5, padx=10, sticky="ew")
 
-pesquisa_button = ctk.CTkButton(frame_opcoes, text="Pesquisar")
+pesquisa_button = ctk.CTkButton(frame_opcoes, text="Pesquisar", command=pesquisar_item)
 pesquisa_button.grid(row=2, column=0, pady=5, padx=10, sticky="ew")
 
-apaga_button = ctk.CTkButton(frame_opcoes, text="Apagar Item Selecionado")
+apaga_button = ctk.CTkButton(frame_opcoes, text="Apagar Item Selecionado", command=apagar_item)
 apaga_button.grid(row=3, column=0, pady=(5, 10), padx=10, sticky="ew")
 
 area_visualizacao = ctk.CTkFrame(app)
