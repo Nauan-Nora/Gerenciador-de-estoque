@@ -64,7 +64,7 @@ def apagar_item():
     item_selecionado = mostra_treeview.selection()
     print(f"Itens selecionados na TreeView: {item_selecionado}")
     if not item_selecionado:
-        print("Nenhum item selecionado para apagar.")
+        messagebox.showerror("ATENÇÂO", "Não a nenhum item selecionado")
         return 
 
     item_id = item_selecionado[0]
@@ -94,8 +94,7 @@ def apagar_item():
         arquivo.save("dados.xlsx")
         mostra_estoque()
     else:
-        print("Não foi possível obter os valores do item selecionado na TreeView.")
-
+        messagebox.showerror("ERRO", "Não foi possivel obter os valores da tabela. Verifique se o dados.xlsx esta salvo no diretorio correto")
     arquivo.save("dados.xlsx")
     mostra_estoque()
 
