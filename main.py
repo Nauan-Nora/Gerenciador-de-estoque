@@ -147,7 +147,7 @@ style.configure("Dark.Treeview", background="#333333", foreground="white")
 style.configure("Dark.Treeview.Heading", background="#555555", foreground="white")
 style.map("Dark.Treeview", background=[("selected", "#5699bc")])
 
-frame_superior = ctk.CTkFrame(app)
+frame_superior = ctk.CTkFrame(app, fg_color="transparent")
 frame_superior.grid(row=0, column=0, padx=20, pady=20, sticky="ew")
 frame_superior.grid_columnconfigure(0, weight=1)
 frame_superior.grid_columnconfigure(1, weight=0)
