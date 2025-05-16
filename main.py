@@ -60,6 +60,20 @@ def cadastro_produto():
         preco_entry.delete(0, "end")
         quantidade_entry.delete(0, "end")
         venda_entry.delete(0, "end")
+     
+    def mostra_estoque():
+        mostra_treeview.delete(*mostra_treeview.get_children())
+        try:
+            cabecalhos = [cell.value for cell in ativa[1]]
+            mostra_treeview["columns"] = cabecalhos
+            mostra_treeview["show"] = "headings"
+            for col_index, col in enumerate(cabecalhos):
+                mostra_treeview.heading(col, text=col)
+                mostra_treeview.column(col, width=100)
+            for row in ativa.iter_rows(min_row=2, values_only=True):
+                mostra_treeview.insert('', tk.END, values=row)
+        except IndexError:
+            print("A planilha está vazia ou a primeira linha não contém cabeçalhos.")
 
     def pesquisar_item():
         termo_pesquisa = pesquisa_entry.get().lower()
@@ -217,7 +231,7 @@ def cadastro_produto():
 
     volta_button = ctk.CTkButton(frame_opcoes, text="Menu Principal", command=menu_principal, font=fonte_escritas)
     volta_button.grid(row=4, column=0, pady=(20, 20), padx=20, sticky="ew")
- 
+
     area_visualizacao = ctk.CTkFrame(app)
     area_visualizacao.grid(row=2, column=0, padx=20, pady=20, sticky="nsew")
     area_visualizacao.grid_columnconfigure(0, weight=1)
@@ -250,7 +264,7 @@ def cadastro_produto():
 
 def janela_baixa_estoque():
     main_frame.place_forget()
-    app.geometry("700x650") 
+    app.geometry("800x600") 
     app.title("Baixa / Adição de Estoque")
     
     def pesquisar_item_baixa():
@@ -364,8 +378,145 @@ def janela_baixa_estoque():
     voltar_button = ctk.CTkButton(app, text="Menu Principal", command=menu_principal, font=fonte_escritas)
     voltar_button.pack(pady=10)
 
+editor = None 
+
+editor = None  
+
 def edicao_produto():
-    pass
+    global editor
+    main_frame.place_forget()
+
+    app.geometry("830x710")
+    app.title("Tabela editavel")
+
+    tabela_frame = ctk.CTkFrame(app)
+    tabela_frame.pack(pady=20, padx=20, fill="both", expand=True)
+    tabela_frame.grid_columnconfigure(0, weight=1)
+    tabela_frame.grid_rowconfigure(0, weight=1)
+
+    treeview_editavel = ttk.Treeview(
+        tabela_frame,
+        columns=("Código", "Nome", "Custo", "Quantidade", "Valor de venda"),
+        show="headings",
+        style=f"{'Dark' if tema_atual == 'dark' else 'Light'}.Treeview"
+    )
+    treeview_editavel.grid(row=0, column=0, sticky="nsew")
+
+    tabela_scroll_y = ttk.Scrollbar(tabela_frame, orient="vertical", command=treeview_editavel.yview)
+    treeview_editavel.configure(yscrollcommand=tabela_scroll_y.set)
+    tabela_scroll_y.grid(row=0, column=1, sticky="ns")
+
+    tabela_scroll_x = ttk.Scrollbar(tabela_frame, orient="horizontal", command=treeview_editavel.xview)
+    treeview_editavel.configure(xscrollcommand=tabela_scroll_x.set)
+    tabela_scroll_x.grid(row=1, column=0, sticky="ew")
+
+    treeview_editavel.heading("Código", text="Código")
+    treeview_editavel.heading("Nome", text="Nome")
+    treeview_editavel.heading("Custo", text="Custo")
+    treeview_editavel.heading("Quantidade", text="Quantidade")
+    treeview_editavel.heading("Valor de venda", text="Valor de venda")
+
+    treeview_editavel.column("#0", width=0, stretch=tk.NO)
+    treeview_editavel.column("Código", anchor=tk.CENTER, width=80)
+    treeview_editavel.column("Nome", anchor=tk.W, width=150)
+    treeview_editavel.column("Custo", anchor=tk.E, width=80)
+    treeview_editavel.column("Quantidade", anchor=tk.CENTER, width=100)
+    treeview_editavel.column("Valor de venda", anchor=tk.E, width=120)
+
+    def popular_tabela_edicao():
+        treeview_editavel.delete(*treeview_editavel.get_children())
+        try:
+            cabecalhos = [cell.value for cell in ativa[1]]
+            if not treeview_editavel["columns"]:
+                treeview_editavel["columns"] = cabecalhos
+                treeview_editavel["show"] = "headings"
+                for col_index, col in enumerate(cabecalhos):
+                    treeview_editavel.heading(col, text=col)
+                    treeview_editavel.column(col, width=100)
+            for row in ativa.iter_rows(min_row=2, values_only=True):
+                treeview_editavel.insert('', tk.END, values=row)
+        except IndexError:
+            print("A planilha está vazia ou a primeira linha não contém cabeçalhos.")
+
+    editor = None
+
+    def on_cell_click(event):
+        global editor
+        if editor is not None:
+            editor.destroy()
+
+        item_id = treeview_editavel.identify_row(event.y)
+        column_id = treeview_editavel.identify_column(event.x)
+
+        if item_id and column_id != '#0':
+            column_index = int(column_id[1:]) - 1
+            bbox = treeview_editavel.bbox(item_id, column_id)
+            cell_value = treeview_editavel.item(item_id, 'values')[column_index]
+
+            editor = ctk.CTkEntry(treeview_editavel, width=bbox[2], height=bbox[3], font=fonte_escritas) 
+            editor.insert(0, cell_value)
+            editor.place(x=bbox[0], y=bbox[1])
+            editor.selection_range(0, tk.END)
+            editor.focus_set()
+
+            old_value = cell_value
+
+            def save_edit(event):
+                new_value = editor.get()
+                treeview_editavel.set(item_id, column_id, new_value)
+                editor.destroy()
+                if new_value != old_value:
+                    salvar_edicoes()
+
+            editor.bind("<FocusOut>", save_edit)
+            editor.bind("<Return>", save_edit)
+
+    def salvar_edicoes():
+        try:
+            for i, item_id in enumerate(treeview_editavel.get_children()):
+                values = treeview_editavel.item(item_id, 'values')
+                linha_excel = i + 2 
+                for j, value in enumerate(values, start=1):
+                    ativa.cell(row=linha_excel, column=j, value=value)
+            arquivo.save("dados.xlsx")
+            messagebox.showinfo("Sucesso", "As edições foram salvas no arquivo.")
+        except Exception as e:
+            messagebox.showerror("Erro ao salvar", f"Ocorreu um erro ao salvar as edições: {e}")
+
+    def popular_tabela_edicao():
+        treeview_editavel.delete(*treeview_editavel.get_children())
+        try:
+            cabecalhos = [cell.value for cell in ativa[1]]
+            if not treeview_editavel["columns"]:
+                treeview_editavel["columns"] = cabecalhos
+                treeview_editavel["show"] = "headings"
+                for col_index, col in enumerate(cabecalhos):
+                    treeview_editavel.heading(col, text=col)
+                    treeview_editavel.column(col, width=100)
+            for row in ativa.iter_rows(min_row=2, values_only=True):
+                treeview_editavel.insert('', tk.END, values=row)
+        except IndexError:
+            print("A planilha está vazia ou a primeira linha não contém cabeçalhos.")
+
+    popular_tabela_edicao()
+    treeview_editavel.bind("<Double-1>", on_cell_click)
+
+    botao_salvar = ctk.CTkButton(tabela_frame, text="Salvar Edições", command=salvar_edicoes, font=fonte_escritas)
+    botao_salvar.grid(row=2, column=0, pady=10, sticky="ew")
+
+    def menu_principal():
+        global editor
+        if editor is not None:
+            editor.destroy()
+        tabela_frame.pack_forget()
+        main_frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+        app.geometry("300x400")
+        app.title("Gerenciador de estoque")
+
+    botao_voltar = ctk.CTkButton(tabela_frame, text="Voltar ao Menu", command=menu_principal, font=fonte_escritas)
+    botao_voltar.grid(row=3, column=0, pady=10, sticky="ew")
+
+
 
 main_frame = ctk.CTkFrame(app, fg_color="transparent")
 main_frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
@@ -379,7 +530,7 @@ botao_cadas.pack( pady=10, anchor="se")
 botao_baixa = ctk.CTkButton(main_frame, text=" Baixa/Acrecimo ", width=200, height=100, command=janela_baixa_estoque, font=fonte_titulo)
 botao_baixa.pack( pady=10, anchor="se")
 
-botao_edicao = ctk.CTkButton(main_frame, text="Edição de produtos", width=200, height=100, font=fonte_titulo)
+botao_edicao = ctk.CTkButton(main_frame, text="Edição de produtos", width=200, height=100, font=fonte_titulo, command=edicao_produto)
 botao_edicao.pack(pady=10, anchor="se")
 
 app.mainloop()
