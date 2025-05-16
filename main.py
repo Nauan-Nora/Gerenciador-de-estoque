@@ -10,9 +10,26 @@ ativa = arquivo['Plan1']
 tema_atual = "white"
 
 app = ctk.CTk()
-app.geometry("300x400")
+app.geometry("300x420")
 app.title("Gerenciador de estoque")
 app.iconbitmap('assets/icon.ico')
+
+fonte_titulo = ctk.CTkFont(family="@Adobe Kaiti Std R" ,size=20, weight="bold")
+fonte_escritas = ctk.CTkFont(family="Times New Roman", size=12, weight="bold")
+
+def mostra_estoque(treeview):
+    treeview.delete(*treeview.get_children())
+    try:
+        cabecalhos = [cell.value for cell in ativa[1]]
+        treeview["columns"] = cabecalhos
+        treeview["show"] = "headings"
+        for col_index, col in enumerate(cabecalhos):
+            treeview.heading(col, text=col)
+            treeview.column(col, width=100)
+        for row in ativa.iter_rows(min_row=2, values_only=True):
+            treeview.insert('', tk.END, values=row)
+    except IndexError:
+        print("A planilha está vazia ou a primeira linha não contém cabeçalhos.")
 
 def cadastro_produto():
     main_frame.place_forget()
@@ -43,20 +60,6 @@ def cadastro_produto():
         preco_entry.delete(0, "end")
         quantidade_entry.delete(0, "end")
         venda_entry.delete(0, "end")
-
-    def mostra_estoque():
-        mostra_treeview.delete(*mostra_treeview.get_children())
-        try:
-            cabecalhos = [cell.value for cell in ativa[1]]
-            mostra_treeview["columns"] = cabecalhos
-            mostra_treeview["show"] = "headings"
-            for col_index, col in enumerate(cabecalhos):
-                mostra_treeview.heading(col, text=col)
-                mostra_treeview.column(col, width=100)
-            for row in ativa.iter_rows(min_row=2, values_only=True):
-                mostra_treeview.insert('', tk.END, values=row)
-        except IndexError:
-            print("A planilha está vazia ou a primeira linha não contém cabeçalhos.")
 
     def pesquisar_item():
         termo_pesquisa = pesquisa_entry.get().lower()
@@ -171,28 +174,28 @@ def cadastro_produto():
     frame_cadastro.grid(row=0, column=0, padx=(0, 10), pady=10, sticky="nsew")
     frame_cadastro.grid_columnconfigure(0, weight=1)
 
-    titulo = ctk.CTkLabel(frame_cadastro, text="Formulario de cadastro")
+    titulo = ctk.CTkLabel(frame_cadastro, text="Formulario de cadastro", font=fonte_titulo)
     titulo.grid(row=0, column=0, pady=5, sticky="ew")
 
-    nome_entry = ctk.CTkEntry(frame_cadastro, placeholder_text="Nome")
+    nome_entry = ctk.CTkEntry(frame_cadastro, placeholder_text="Nome", font=fonte_escritas)
     nome_entry.grid(row=1, column=0, pady=5, sticky="ew")
 
-    codigo_entry = ctk.CTkEntry(frame_cadastro, placeholder_text="Código")
+    codigo_entry = ctk.CTkEntry(frame_cadastro, placeholder_text="Código", font=fonte_escritas)
     codigo_entry.grid(row=2, column=0, pady=5, sticky="ew")
 
-    preco_entry = ctk.CTkEntry(frame_cadastro, placeholder_text="Custo (usar ponto ao envez de virgula)")
+    preco_entry = ctk.CTkEntry(frame_cadastro, placeholder_text="Custo (usar ponto ao envez de virgula)", font=fonte_escritas)
     preco_entry.grid(row=3, column=0, pady=5, sticky="ew")
 
-    quantidade_entry = ctk.CTkEntry(frame_cadastro, placeholder_text="Quantidade")
+    quantidade_entry = ctk.CTkEntry(frame_cadastro, placeholder_text="Quantidade", font=fonte_escritas)
     quantidade_entry.grid(row=4, column=0, pady=5, sticky="ew")
 
-    venda_entry = ctk.CTkEntry(frame_cadastro, placeholder_text="Valor de venda (usar ponto ao envez de virgula)")
+    venda_entry = ctk.CTkEntry(frame_cadastro, placeholder_text="Valor de venda (usar ponto ao envez de virgula)", font=fonte_escritas)
     venda_entry.grid(row=5, column=0, pady=5, sticky="ew")
 
-    buton_cadastrar = ctk.CTkButton(frame_cadastro, text="Cadastrar", command=verifica_preenchimento)
+    buton_cadastrar = ctk.CTkButton(frame_cadastro, text="Cadastrar", command=verifica_preenchimento, font=fonte_escritas)
     buton_cadastrar.grid(row=6, column=0, pady=5, sticky="ew")
 
-    buton_limpar = ctk.CTkButton(frame_cadastro, text="Limpar formulario", command=limpar_campos)
+    buton_limpar = ctk.CTkButton(frame_cadastro, text="Limpar formulario", command=limpar_campos, font=fonte_escritas)
     buton_limpar.grid(row=7, column=0, pady=5, sticky="ew")
 
     frame_opcoes = ctk.CTkFrame(frame_superior)
@@ -200,19 +203,19 @@ def cadastro_produto():
     frame_opcoes.grid_columnconfigure(0, weight=1)
     frame_opcoes.grid_rowconfigure(1, weight=0)
 
-    funcionalidades_label = ctk.CTkLabel(frame_opcoes, text="Funcionalidades")
+    funcionalidades_label = ctk.CTkLabel(frame_opcoes, text="Funcionalidades", font=fonte_titulo)
     funcionalidades_label.grid(row=0, column=0, pady=(5, 10), padx=10, sticky="ew")
 
-    pesquisa_entry = ctk.CTkEntry(frame_opcoes, placeholder_text="Insira um nome")
+    pesquisa_entry = ctk.CTkEntry(frame_opcoes, placeholder_text="Insira um nome", font=fonte_escritas)
     pesquisa_entry.grid(row=1, column=0, pady=5, padx=10, sticky="ew")
 
-    pesquisa_button = ctk.CTkButton(frame_opcoes, text="Pesquisar", command=pesquisar_item)
+    pesquisa_button = ctk.CTkButton(frame_opcoes, text="Pesquisar", command=pesquisar_item, font=fonte_escritas)
     pesquisa_button.grid(row=2, column=0, pady=5, padx=10, sticky="ew")
 
-    apaga_button = ctk.CTkButton(frame_opcoes, text="Apagar Item Selecionado", command=apagar_item)
+    apaga_button = ctk.CTkButton(frame_opcoes, text="Apagar Item Selecionado", command=apagar_item, font=fonte_escritas)
     apaga_button.grid(row=3, column=0, pady=(5, 10), padx=10, sticky="ew")
 
-    volta_button = ctk.CTkButton(frame_opcoes, text="Menu Principal", command=menu_principal)
+    volta_button = ctk.CTkButton(frame_opcoes, text="Menu Principal", command=menu_principal, font=fonte_escritas)
     volta_button.grid(row=4, column=0, pady=(20, 20), padx=20, sticky="ew")
  
     area_visualizacao = ctk.CTkFrame(app)
@@ -245,25 +248,11 @@ def cadastro_produto():
 
     mostra_estoque()
 
-def mostra_estoque(treeview):
-    treeview.delete(*treeview.get_children())
-    try:
-        cabecalhos = [cell.value for cell in ativa[1]]
-        treeview["columns"] = cabecalhos
-        treeview["show"] = "headings"
-        for col_index, col in enumerate(cabecalhos):
-            treeview.heading(col, text=col)
-            treeview.column(col, width=100)
-        for row in ativa.iter_rows(min_row=2, values_only=True):
-            treeview.insert('', tk.END, values=row)
-    except IndexError:
-        print("A planilha está vazia ou a primeira linha não contém cabeçalhos.")
-
 def janela_baixa_estoque():
     main_frame.place_forget()
     app.geometry("700x650") 
     app.title("Baixa / Adição de Estoque")
-
+    
     def pesquisar_item_baixa():
         termo_pesquisa = pesquisa_baixa_entry.get().lower()
         resultados = []
@@ -338,11 +327,11 @@ def janela_baixa_estoque():
         app.geometry("300x400")
         app.title("Gerenciador de estoque")
 
-    pesquisa_baixa_label = ctk.CTkLabel(app, text="Pesquisar Item:")
+    pesquisa_baixa_label = ctk.CTkLabel(app, text="Pesquisar Item:", font=fonte_titulo)
     pesquisa_baixa_label.pack(pady=5)
-    pesquisa_baixa_entry = ctk.CTkEntry(app, placeholder_text="Nome ou Código", width=250) # Aumentei a largura
+    pesquisa_baixa_entry = ctk.CTkEntry(app, placeholder_text="Nome ou Código", width=250, font=fonte_escritas) 
     pesquisa_baixa_entry.pack(pady=5, padx=10)
-    pesquisa_baixa_button = ctk.CTkButton(app, text="Pesquisar", command=pesquisar_item_baixa)
+    pesquisa_baixa_button = ctk.CTkButton(app, text="Pesquisar", command=pesquisar_item_baixa, font=fonte_escritas)
     pesquisa_baixa_button.pack(pady=5)
 
     treeview_baixa = ttk.Treeview(app, columns=("Código", "Nome", "Custo", "Quantidade", "Valor de venda"), show="headings")
@@ -359,32 +348,38 @@ def janela_baixa_estoque():
     treeview_baixa.column("Valor de venda", anchor=tk.E, width=120)
     treeview_baixa.pack(pady=10, padx=10, fill="both", expand=True)
 
-    tipo_label = ctk.CTkLabel(app, text="Tipo de Alteração:")
+    tipo_label = ctk.CTkLabel(app, text="Tipo de Alteração:", font=fonte_escritas)
     tipo_label.pack(pady=5)
     tipo_combobox = ctk.CTkComboBox(app, values=["Baixa", "Acréscimo"])
     tipo_combobox.pack(pady=5)
 
-    quantidade_alteracao_label = ctk.CTkLabel(app, text="Quantidade:")
+    quantidade_alteracao_label = ctk.CTkLabel(app, text="Quantidade:", font=fonte_escritas)
     quantidade_alteracao_label.pack(pady=5)
-    quantidade_alteracao_entry = ctk.CTkEntry(app, placeholder_text="Quantidade a alterar")
+    quantidade_alteracao_entry = ctk.CTkEntry(app, placeholder_text="Quantidade a alterar", font=fonte_escritas)
     quantidade_alteracao_entry.pack(pady=5, padx=10)
 
-    registrar_button = ctk.CTkButton(app, text="Registrar Alteração", command=registrar_alteracao)
+    registrar_button = ctk.CTkButton(app, text="Registrar Alteração", command=registrar_alteracao, font=fonte_escritas)
     registrar_button.pack(pady=10)
 
-    voltar_button = ctk.CTkButton(app, text="Menu Principal", command=menu_principal)
+    voltar_button = ctk.CTkButton(app, text="Menu Principal", command=menu_principal, font=fonte_escritas)
     voltar_button.pack(pady=10)
+
+def edicao_produto():
+    pass
 
 main_frame = ctk.CTkFrame(app, fg_color="transparent")
 main_frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
-botao_cadas = ctk.CTkButton(main_frame, text="Sistema de cadastro", width=200, height=100, command=cadastro_produto)
-botao_cadas.pack( pady=10)
+label_menu = ctk.CTkLabel(main_frame, text="Menu Principal", font=fonte_titulo)
+label_menu.pack(pady=10, anchor=tk.CENTER)
 
-botao_baixa = ctk.CTkButton(main_frame, text="Baixa/Acrecimo de estoque", width=200, height=100, command=janela_baixa_estoque)
+botao_cadas = ctk.CTkButton(main_frame, text="Sistema cadastro", width=200, height=100, command=cadastro_produto, font=fonte_titulo)
+botao_cadas.pack( pady=10, anchor="se")
+
+botao_baixa = ctk.CTkButton(main_frame, text=" Baixa/Acrecimo ", width=200, height=100, command=janela_baixa_estoque, font=fonte_titulo)
 botao_baixa.pack( pady=10, anchor="se")
 
-botao_edicao = ctk.CTkButton(main_frame, text="Edição de produtos", width=200, height=100)
-botao_edicao.pack(pady=10)
+botao_edicao = ctk.CTkButton(main_frame, text="Edição de produtos", width=200, height=100, font=fonte_titulo)
+botao_edicao.pack(pady=10, anchor="se")
 
 app.mainloop()
