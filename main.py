@@ -138,12 +138,14 @@ def cadastro_produto():
         frame_superior.grid_forget()
         main_frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
         app.geometry("300x400")
+        app.title("Gerenciador de estoque")
          
 
     ctk.set_appearance_mode(tema_atual)
     ctk.set_default_color_theme("green")
 
     app.geometry("830x710")
+    app.title("Sistema de produtos")
 
     app.grid_rowconfigure(0, weight=0)
     app.grid_rowconfigure(1, weight=0) 
@@ -211,7 +213,7 @@ def cadastro_produto():
     apaga_button.grid(row=3, column=0, pady=(5, 10), padx=10, sticky="ew")
 
     volta_button = ctk.CTkButton(frame_opcoes, text="Menu Principal", command=menu_principal)
-    volta_button.grid(row=4, column=0, pady=(5, 10), padx=10, sticky="ew")
+    volta_button.grid(row=4, column=0, pady=(20, 20), padx=20, sticky="ew")
  
     area_visualizacao = ctk.CTkFrame(app)
     area_visualizacao.grid(row=2, column=0, padx=20, pady=20, sticky="nsew")
@@ -243,15 +245,144 @@ def cadastro_produto():
 
     mostra_estoque()
 
+def mostra_estoque(treeview):
+    treeview.delete(*treeview.get_children())
+    try:
+        cabecalhos = [cell.value for cell in ativa[1]]
+        treeview["columns"] = cabecalhos
+        treeview["show"] = "headings"
+        for col_index, col in enumerate(cabecalhos):
+            treeview.heading(col, text=col)
+            treeview.column(col, width=100)
+        for row in ativa.iter_rows(min_row=2, values_only=True):
+            treeview.insert('', tk.END, values=row)
+    except IndexError:
+        print("A planilha está vazia ou a primeira linha não contém cabeçalhos.")
+
+def janela_baixa_estoque():
+    main_frame.place_forget()
+    app.geometry("700x650") 
+    app.title("Baixa / Adição de Estoque")
+
+    def pesquisar_item_baixa():
+        termo_pesquisa = pesquisa_baixa_entry.get().lower()
+        resultados = []
+        for row_index, row in enumerate(ativa.iter_rows(min_row=2, values_only=True), start=2):
+            if any(termo_pesquisa in str(valor).lower() for valor in row if valor is not None):
+                resultados.append((row_index, row))
+        atualizar_treeview_baixa(resultados)
+
+    def atualizar_treeview_baixa(resultados):
+        treeview_baixa.delete(*treeview_baixa.get_children())
+        for index, row in resultados:
+            treeview_baixa.insert('', tk.END, values=row)
+
+    def registrar_alteracao():
+        item_selecionado = treeview_baixa.selection()
+        if not item_selecionado:
+            messagebox.showerror("ATENÇÃO", "Selecione um item na tabela.")
+            return
+
+        item_id = item_selecionado[0]
+        valores = treeview_baixa.item(item_id, 'values')
+        if not valores:
+            messagebox.showerror("ERRO", "Não foi possível obter os valores do item.")
+            return
+
+        try:
+            codigo = int(valores[0])
+            quantidade_atual = int(valores[3])
+            tipo_alteracao = tipo_combobox.get()
+            quantidade_alterada = int(quantidade_alteracao_entry.get())
+
+            if tipo_alteracao == "Baixa":
+                nova_quantidade = quantidade_atual - quantidade_alterada
+            elif tipo_alteracao == "Acréscimo":
+                nova_quantidade = quantidade_atual + quantidade_alterada
+            else:
+                messagebox.showerror("ERRO", "Selecione o tipo de alteração.")
+                return
+
+            if nova_quantidade < 0:
+                messagebox.showerror("ATENÇÃO", "Estoque não pode ser negativo.")
+                return
+
+            for row_index, row in enumerate(ativa.iter_rows(min_row=2), start=2):
+                if row[0].value == codigo:
+                    ativa.cell(row=row_index, column=4, value=nova_quantidade)
+                    arquivo.save("dados.xlsx")
+                    mostra_estoque()
+                    messagebox.showinfo("SUCESSO", f"Estoque do item '{valores[1]}' atualizado para {nova_quantidade}.")
+                    app.destroy()
+                    return
+
+            messagebox.showerror("ERRO", "Item não encontrado na planilha.")
+
+        except ValueError:
+            messagebox.showerror("ERRO", "Por favor, insira valores numéricos válidos para quantidade.")
+        except Exception as e:
+            messagebox.showerror("ERRO", f"Ocorreu um erro: {e}")
+
+    def menu_principal():
+        pesquisa_baixa_label.pack_forget()
+        pesquisa_baixa_entry.pack_forget()
+        pesquisa_baixa_button.pack_forget()
+        treeview_baixa.pack_forget()
+        tipo_label.pack_forget()
+        tipo_combobox.pack_forget()
+        quantidade_alteracao_label.pack_forget()
+        quantidade_alteracao_entry.pack_forget()    
+        registrar_button.pack_forget()
+        voltar_button.pack_forget()
+        main_frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
+        app.geometry("300x400")
+        app.title("Gerenciador de estoque")
+
+    pesquisa_baixa_label = ctk.CTkLabel(app, text="Pesquisar Item:")
+    pesquisa_baixa_label.pack(pady=5)
+    pesquisa_baixa_entry = ctk.CTkEntry(app, placeholder_text="Nome ou Código", width=250) # Aumentei a largura
+    pesquisa_baixa_entry.pack(pady=5, padx=10)
+    pesquisa_baixa_button = ctk.CTkButton(app, text="Pesquisar", command=pesquisar_item_baixa)
+    pesquisa_baixa_button.pack(pady=5)
+
+    treeview_baixa = ttk.Treeview(app, columns=("Código", "Nome", "Custo", "Quantidade", "Valor de venda"), show="headings")
+    treeview_baixa.heading("Código", text="Código")
+    treeview_baixa.heading("Nome", text="Nome")
+    treeview_baixa.heading("Custo", text="Custo")
+    treeview_baixa.heading("Quantidade", text="Quantidade")
+    treeview_baixa.heading("Valor de venda", text="Valor de venda")
+    treeview_baixa.column("#0", width=0, stretch=tk.NO)
+    treeview_baixa.column("Código", anchor=tk.CENTER, width=80)
+    treeview_baixa.column("Nome", anchor=tk.W, width=150)
+    treeview_baixa.column("Custo", anchor=tk.E, width=80)
+    treeview_baixa.column("Quantidade", anchor=tk.CENTER, width=100)
+    treeview_baixa.column("Valor de venda", anchor=tk.E, width=120)
+    treeview_baixa.pack(pady=10, padx=10, fill="both", expand=True)
+
+    tipo_label = ctk.CTkLabel(app, text="Tipo de Alteração:")
+    tipo_label.pack(pady=5)
+    tipo_combobox = ctk.CTkComboBox(app, values=["Baixa", "Acréscimo"])
+    tipo_combobox.pack(pady=5)
+
+    quantidade_alteracao_label = ctk.CTkLabel(app, text="Quantidade:")
+    quantidade_alteracao_label.pack(pady=5)
+    quantidade_alteracao_entry = ctk.CTkEntry(app, placeholder_text="Quantidade a alterar")
+    quantidade_alteracao_entry.pack(pady=5, padx=10)
+
+    registrar_button = ctk.CTkButton(app, text="Registrar Alteração", command=registrar_alteracao)
+    registrar_button.pack(pady=10)
+
+    voltar_button = ctk.CTkButton(app, text="Menu Principal", command=menu_principal)
+    voltar_button.pack(pady=10)
+
 main_frame = ctk.CTkFrame(app, fg_color="transparent")
 main_frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
-
 
 botao_cadas = ctk.CTkButton(main_frame, text="Sistema de cadastro", width=200, height=100, command=cadastro_produto)
 botao_cadas.pack( pady=10)
 
-botao_baixa = ctk.CTkButton(main_frame, text="Baixa de estoque", width=200, height=100)
-botao_baixa.pack( pady=10)
+botao_baixa = ctk.CTkButton(main_frame, text="Baixa/Acrecimo de estoque", width=200, height=100, command=janela_baixa_estoque)
+botao_baixa.pack( pady=10, anchor="se")
 
 botao_edicao = ctk.CTkButton(main_frame, text="Edição de produtos", width=200, height=100)
 botao_edicao.pack(pady=10)
