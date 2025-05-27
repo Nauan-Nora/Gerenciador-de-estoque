@@ -17,8 +17,6 @@ app.iconbitmap('assets/icon.ico')
 fonte_titulo = ctk.CTkFont(family="@Adobe Kaiti Std R" ,size=20, weight="bold")
 fonte_escritas = ctk.CTkFont(family="Times New Roman", size=12, weight="bold")
 
-
-
 def cadastro_produto():
     main_frame.place_forget()
 
@@ -150,7 +148,7 @@ def cadastro_produto():
     ctk.set_default_color_theme("green")
 
     app.geometry("830x710")
-    app.title("Sistema de produtos")
+    app.title("Sistema de cadastro")
 
     app.grid_rowconfigure(0, weight=0)
     app.grid_rowconfigure(1, weight=0) 
@@ -176,7 +174,7 @@ def cadastro_produto():
     frame_cadastro.grid(row=0, column=0, padx=(0, 10), pady=10, sticky="nsew")
     frame_cadastro.grid_columnconfigure(0, weight=1)
 
-    titulo = ctk.CTkLabel(frame_cadastro, text="Formulario de cadastro", font=fonte_titulo)
+    titulo = ctk.CTkLabel(frame_cadastro, text="Formulário de cadastro", font=fonte_titulo)
     titulo.grid(row=0, column=0, pady=5, sticky="ew")
 
     nome_entry = ctk.CTkEntry(frame_cadastro, placeholder_text="Nome", font=fonte_escritas)
@@ -185,19 +183,19 @@ def cadastro_produto():
     codigo_entry = ctk.CTkEntry(frame_cadastro, placeholder_text="Código", font=fonte_escritas)
     codigo_entry.grid(row=2, column=0, pady=5, sticky="ew")
 
-    preco_entry = ctk.CTkEntry(frame_cadastro, placeholder_text="Custo (usar ponto ao envez de virgula)", font=fonte_escritas)
+    preco_entry = ctk.CTkEntry(frame_cadastro, placeholder_text="Custo (usar ponto ao envez de vírgula)", font=fonte_escritas)
     preco_entry.grid(row=3, column=0, pady=5, sticky="ew")
 
     quantidade_entry = ctk.CTkEntry(frame_cadastro, placeholder_text="Quantidade", font=fonte_escritas)
     quantidade_entry.grid(row=4, column=0, pady=5, sticky="ew")
 
-    venda_entry = ctk.CTkEntry(frame_cadastro, placeholder_text="Valor de venda (usar ponto ao envez de virgula)", font=fonte_escritas)
+    venda_entry = ctk.CTkEntry(frame_cadastro, placeholder_text="Valor de venda (usar ponto ao envez de vírgula)", font=fonte_escritas)
     venda_entry.grid(row=5, column=0, pady=5, sticky="ew")
 
     buton_cadastrar = ctk.CTkButton(frame_cadastro, text="Cadastrar", command=verifica_preenchimento, font=fonte_escritas)
     buton_cadastrar.grid(row=6, column=0, pady=5, sticky="ew")
 
-    buton_limpar = ctk.CTkButton(frame_cadastro, text="Limpar formulario", command=limpar_campos, font=fonte_escritas)
+    buton_limpar = ctk.CTkButton(frame_cadastro, text="Limpar formulário", command=limpar_campos, font=fonte_escritas)
     buton_limpar.grid(row=7, column=0, pady=5, sticky="ew")
 
     frame_opcoes = ctk.CTkFrame(frame_superior)
@@ -333,7 +331,6 @@ def janela_baixa_estoque():
         app.geometry("300x400")
         app.title("Gerenciador de estoque")
 
-    # --- criação dos widgets ---
     pesquisa_baixa_label = ctk.CTkLabel(app, text="Pesquisar Item:", font=fonte_titulo)
     pesquisa_baixa_label.pack(pady=5)
     pesquisa_baixa_entry = ctk.CTkEntry(
@@ -392,8 +389,7 @@ def janela_baixa_estoque():
         font=fonte_escritas
     )
     voltar_button.pack(pady=10)
-
-    # popula imediatamente
+  
     popula_full()
 
 editor = None 
@@ -405,7 +401,7 @@ def edicao_produto():
     main_frame.place_forget()
 
     app.geometry("830x710")
-    app.title("Tabela editavel")
+    app.title("Tabela editável")
 
     tabela_frame = ctk.CTkFrame(app)
     tabela_frame.pack(pady=20, padx=20, fill="both", expand=True)
@@ -534,8 +530,6 @@ def edicao_produto():
     botao_voltar = ctk.CTkButton(tabela_frame, text="Voltar ao Menu", command=menu_principal, font=fonte_escritas)
     botao_voltar.grid(row=3, column=0, pady=10, sticky="ew")
 
-
-
 main_frame = ctk.CTkFrame(app, fg_color="transparent")
 main_frame.place(relx=0.5, rely=0.5, anchor=tk.CENTER)
 
@@ -545,7 +539,7 @@ label_menu.pack(pady=10, anchor=tk.CENTER)
 botao_cadas = ctk.CTkButton(main_frame, text="Sistema cadastro", width=200, height=100, command=cadastro_produto, font=fonte_titulo)
 botao_cadas.pack( pady=10, anchor="se")
 
-botao_baixa = ctk.CTkButton(main_frame, text=" Baixa/Acrecimo ", width=200, height=100, command=janela_baixa_estoque, font=fonte_titulo)
+botao_baixa = ctk.CTkButton(main_frame, text=" Baixa/acréscimo", width=200, height=100, command=janela_baixa_estoque, font=fonte_titulo)
 botao_baixa.pack( pady=10, anchor="se")
 
 botao_edicao = ctk.CTkButton(main_frame, text="Edição de produtos", width=200, height=100, font=fonte_titulo, command=edicao_produto)
