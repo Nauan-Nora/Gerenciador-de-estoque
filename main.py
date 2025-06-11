@@ -143,7 +143,6 @@ def cadastro_produto():
         app.geometry("300x400")
         app.title("Gerenciador de estoque")
          
-
     ctk.set_appearance_mode(tema_atual)
     ctk.set_default_color_theme("green")
 
