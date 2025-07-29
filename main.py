@@ -215,7 +215,7 @@ def cadastro_produto():
     apaga_button.grid(row=3, column=0, pady=(5, 10), padx=10, sticky="ew")
 
     volta_button = ctk.CTkButton(frame_opcoes, text="Menu Principal", command=menu_principal, font=fonte_escritas)
-    volta_button.grid(row=4, column=0, pady=(20, 20), padx=20, sticky="ew")
+    volta_button.grid(row=4, column=0, pady=(30, 20), padx=20, sticky="ew")
 
     area_visualizacao = ctk.CTkFrame(app)
     area_visualizacao.grid(row=2, column=0, padx=20, pady=20, sticky="nsew")
@@ -264,7 +264,7 @@ def mostra_estoque(treeview):
 def janela_baixa_estoque():
     main_frame.place_forget()
     app.geometry("800x600")
-    app.title("Baixa / Adição de Estoque")
+    app.title("Baixa / Acréscimo")
 
     def pesquisar_item_baixa():
         termo = pesquisa_baixa_entry.get().lower()
