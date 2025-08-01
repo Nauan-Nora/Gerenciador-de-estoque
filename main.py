@@ -146,7 +146,7 @@ def cadastro_produto():
     ctk.set_appearance_mode(tema_atual)
     ctk.set_default_color_theme("green")
 
-    app.geometry("830x710")
+    app.geometry("750x600")
     app.title("Sistema de cadastro")
 
     app.grid_rowconfigure(0, weight=0)
@@ -399,7 +399,7 @@ def edicao_produto():
     global editor
     main_frame.place_forget()
 
-    app.geometry("830x710")
+    app.geometry("750x600")
     app.title("Tabela editável")
 
     tabela_frame = ctk.CTkFrame(app)
