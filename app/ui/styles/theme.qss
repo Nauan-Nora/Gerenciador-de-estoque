@@ -1,0 +1,58 @@
+QMainWindow, QWidget {
+    background: $bg_principal;
+    color: $texto_principal;
+}
+
+#PageTitle { font-size: 25px; font-weight: 700; }
+#PageSubtitle { color: $texto_secundario; }
+
+#StatCard {
+    background: $bg_card;
+    border: 1px solid $borda;
+    border-radius: 12px;
+}
+#StatTitle { color: $texto_secundario; font-size: 13px; }
+#StatValue { color: $texto_principal; font-size: 28px; font-weight: 700; }
+
+QLineEdit, QSpinBox, QDoubleSpinBox {
+    background: $bg_card;
+    border: 1px solid $borda;
+    border-radius: 8px;
+    padding: 8px 10px;
+    selection-background-color: $primaria;
+}
+
+QPushButton {
+    background: $primaria;
+    color: white;
+    border-radius: 8px;
+    padding: 8px 16px;
+}
+QPushButton:hover { background: $primaria_hover; }
+QPushButton#SecondaryButton {
+    background: $bg_card;
+    color: $texto_principal;
+    border: 1px solid $borda;
+}
+QPushButton#DangerButton { background: $status_critico; }
+
+QTableWidget#ProductTable {
+    background: $bg_card;
+    alternate-background-color: $bg_principal;
+    border: 1px solid $borda;
+    border-radius: 10px;
+    gridline-color: $borda;
+}
+QHeaderView::section {
+    background: $bg_card;
+    color: $texto_secundario;
+    border: none;
+    border-bottom: 1px solid $borda;
+    padding: 10px;
+    font-weight: 600;
+}
+
+/* status via propriedade dinâmica */
+QLabel[status="ok"]      { color: $status_ok; }
+QLabel[status="alerta"]  { color: $status_alerta; }
+QLabel[status="critico"] { color: $status_critico; }

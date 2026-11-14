@@ -1,0 +1,20 @@
+[project]
+name = "gerenciador-de-estoque"
+version = "0.1.0"
+
+[tool.pyside6-project]
+files = [
+    "main.py",
+    "mainwindow.ui",
+    "models.py",
+    "database.py",
+    "ui/components/stat_card.py",
+    "ui/components/product_dialog.py",
+    "ui/components/database_setup_dialog.py",
+    "ui/components/stock_movement_dialog.py",
+    "ui/components/movement_history_dialog.py",
+    "ui/formatting.py",
+    "ui/styles/loader.py",
+    "ui/styles/themes.py",
+    "ui/styles/theme.qss",
+]
